@@ -2,4 +2,5 @@ const BoardingPassDecoder = require('./boarding-pass-decoder.js');
 
 const boardingPassDecoder = new BoardingPassDecoder();
 boardingPassDecoder.decodeAllBoardingPasses();
-boardingPassDecoder.findMySeat();
+console.log("Found my seat!  ", boardingPassDecoder.findMySeat());
+

@@ -81,7 +81,7 @@ module.exports = class BoardingPassDecoder {
                     // skip ends
                 } else {
                     if (this.decodedBoardingPasses[i-1] && this.decodedBoardingPasses[i+1]) {
-                        console.log("Found my seat!  ", i);
+                        return i;
                     }
                 }
 
