@@ -56,7 +56,7 @@ module.exports = class PassportValidator {
 
     validateHgt(hgt) {
         if (hgt) {
-            let match = hgt.match(/(\d+)\s*(\w+)/);
+            let match = hgt.match(/^(\d+)\s*(\w+)$/);
             if (match && match.length === 3) {
                 let heightInt = parseInt(match[1]);
                 let heightUnit = match[2];
@@ -71,15 +71,15 @@ module.exports = class PassportValidator {
     }
 
     validateHcl(hcl) {
-        return /#[0-9a-f]{6}/.test(hcl);
+        return /^#[0-9a-f]{6}$/.test(hcl);
     }
 
     validateEcl(ecl) {
-        return /(amb|blu|brn|gry|grn|hzl|oth)/.test(ecl);
+        return /^(amb|blu|brn|gry|grn|hzl|oth)$/.test(ecl);
     }
 
     validatePid(pid) {
-        return /\d{9}/.test(pid);
+        return /^\d{9}$/.test(pid);
     }
 
 
