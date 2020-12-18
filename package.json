@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jasmine",
-    "coverage": "istanbul cover node_modules/jasmine/bin/jasmine.js"
+    "coverage": "nyc --exclude='**/*-spec.js'  --reporter=lcov --reporter=text-summary npm run test"
   },
   "repository": {
     "type": "git",
@@ -19,7 +19,8 @@
   },
   "homepage": "https://github.com/dmruczek/advent-of-code-2020#readme",
   "devDependencies": {
-    "istanbul": "^0.4.5",
-    "jasmine": "^3.6.3"
-  }
+    "jasmine": "^3.6.3",
+    "nyc": "^15.1.0"
+  },
+  "dependencies": {}
 }
