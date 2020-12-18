@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = class Map {
+module.exports = class PassportValidator {
     constructor(useTestData) {
         this.initialize(useTestData);
         this.validPassports = 0;
