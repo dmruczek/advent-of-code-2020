@@ -15,6 +15,10 @@ describe("Enhanced Passport Validator", function() {
             expect(passportValidator.validateYear('2002', 1999, 2001)).toBe(false);
 
             expect(passportValidator.validateYear('elephant', 1999, 2001)).toBe(false);
+
+
+            expect(true).toBe(false);
+
         });
 
     });
