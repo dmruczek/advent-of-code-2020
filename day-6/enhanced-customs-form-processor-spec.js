@@ -1,14 +1,14 @@
-describe("CustomsFormProcessor", function () {
+describe("EnhancedCustomsFormProcessor", function () {
 
-    const CustomsFormProcessor = require('./customs-form-processor.js');
-    let customsFormProcessor = new CustomsFormProcessor(true);
+    const EnhancedCustomsFormProcessor = require('./enhanced-customs-form-processor.js');
+    let enhancedCustomsFormProcessor = new EnhancedCustomsFormProcessor(true);
 
     describe("processGroup", function () {
 
         it("should properly process a group (A)", function () {
 
             let groupData = `abc`;
-            let processedGroup = customsFormProcessor.processGroup(groupData);
+            let processedGroup = enhancedCustomsFormProcessor.processGroup(groupData);
             expect(processedGroup).toEqual({
                 individualAnswers: ['abc'],
                 aggregateAnswers: 'abc',
@@ -22,11 +22,11 @@ describe("CustomsFormProcessor", function () {
                 `a
 b
 c`;
-            let processedGroup = customsFormProcessor.processGroup(groupData);
+            let processedGroup = enhancedCustomsFormProcessor.processGroup(groupData);
             expect(processedGroup).toEqual({
                 individualAnswers: ['a', 'b', 'c'],
-                aggregateAnswers: 'abc',
-                uniqueAnswerCount: 3
+                aggregateAnswers: '',
+                uniqueAnswerCount: 0
             });
         });
 
@@ -34,11 +34,11 @@ c`;
             let groupData =
                 `ab
 ac`;
-            let processedGroup = customsFormProcessor.processGroup(groupData);
+            let processedGroup = enhancedCustomsFormProcessor.processGroup(groupData);
             expect(processedGroup).toEqual({
                 individualAnswers: ['ab', 'ac'],
-                aggregateAnswers: 'abc',
-                uniqueAnswerCount: 3
+                aggregateAnswers: 'a',
+                uniqueAnswerCount: 1
             });
         });
 
@@ -48,7 +48,7 @@ ac`;
 a
 a
 a`;
-            let processedGroup = customsFormProcessor.processGroup(groupData);
+            let processedGroup = enhancedCustomsFormProcessor.processGroup(groupData);
             expect(processedGroup).toEqual({
                 individualAnswers: ['a', 'a', 'a', 'a'],
                 aggregateAnswers: 'a',
@@ -58,7 +58,7 @@ a`;
 
         it("should properly process a group (E)", function () {
             let groupData = `b`;
-            let processedGroup = customsFormProcessor.processGroup(groupData);
+            let processedGroup = enhancedCustomsFormProcessor.processGroup(groupData);
             expect(processedGroup).toEqual({
                 individualAnswers: ['b'],
                 aggregateAnswers: 'b',
@@ -67,6 +67,13 @@ a`;
 
         });
 
+    });
+
+
+    describe("processGroup", function () {
+        it("should correctly count all the answers", function () {
+            expect(enhancedCustomsFormProcessor.countAllGroupAnswers()).toEqual(6);
+        });
     });
 
 
