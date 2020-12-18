@@ -17,7 +17,7 @@ module.exports = class PassportValidator {
     parseData(filename) {
         const path = require('path');
         const fs = require('fs');
-        
+
         let data = fs.readFileSync(path.resolve(__dirname, filename), 'utf-8');
         this.passports = data.split('\r\n\r\n');
     }
@@ -33,12 +33,8 @@ module.exports = class PassportValidator {
 
 
     validateYear(yearStr, min, max) {
-        try {
-            let yearInt = parseInt(yearStr);
-            return yearInt >= min && yearInt <= max;
-        } catch (e) {
-            return false;
-        }
+        let yearInt = parseInt(yearStr);
+        return yearInt >= min && yearInt <= max;
     }
 
 

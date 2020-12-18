@@ -10,8 +10,11 @@ describe("Enhanced Passport Validator", function() {
         it ("should properly validate years", function() {
             expect(passportValidator.validateYear('2000', 1999, 2001)).toBe(true);
             expect(passportValidator.validateYear('2000', 2000, 2000)).toBe(true);
+
             expect(passportValidator.validateYear('1998', 1999, 2001)).toBe(false);
             expect(passportValidator.validateYear('2002', 1999, 2001)).toBe(false);
+
+            expect(passportValidator.validateYear('elephant', 1999, 2001)).toBe(false);
         });
 
     });
@@ -28,6 +31,8 @@ describe("Enhanced Passport Validator", function() {
             expect(passportValidator.validateHgt('190cm')).toBe(true);
             expect(passportValidator.validateHgt('190in')).toBe(false);
             expect(passportValidator.validateHgt('190')).toBe(false);
+
+            expect(passportValidator.validateHgt(undefined)).toBe(false);
         });
     });
 
