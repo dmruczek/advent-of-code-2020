@@ -82,4 +82,17 @@ module.exports = class BagRuleAnalyzer {
         return validContainers;
     }
 
+    computeBagCost(bagToCompute) {
+
+        let cost = 0;
+        const rulesForThisBag = this.bagRuleMap[bagToCompute];
+
+        for (let i = 0; i < rulesForThisBag.length; i++) {
+            let bagRule = rulesForThisBag[i];
+            cost += bagRule.quantity + (bagRule.quantity * this.computeBagCost(bagRule.bag));
+        }
+
+        return cost;
+    }
+
 };

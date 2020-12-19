@@ -1,7 +1,11 @@
 describe("BagRuleAnalyzer", function () {
 
     const BagRuleAnalyzer = require('./bag-rule-analyzer.js');
-    let bagRuleAnalyzer = new BagRuleAnalyzer(true);
+    let bagRuleAnalyzer;
+
+    beforeEach(function() {
+        bagRuleAnalyzer = new BagRuleAnalyzer(true);
+    });
 
     describe("decodeBagRule", function () {
 
@@ -45,6 +49,22 @@ describe("BagRuleAnalyzer", function () {
 
     });
 
+    describe("computeBagCost", function () {
+
+        it("should compute the cost of a bag correctly for test-input.txt", function () {
+            bagRuleAnalyzer.processAllBagRules();
+            let cost = bagRuleAnalyzer.computeBagCost('shiny gold');
+            expect(cost).toBe(32);
+        });
+
+        it("should compute the cost of a bag correctly for test-input-2.txt", function () {
+            bagRuleAnalyzer.parseData('test-input-2.txt');
+            bagRuleAnalyzer.processAllBagRules();
+            let cost = bagRuleAnalyzer.computeBagCost('shiny gold');
+            expect(cost).toBe(126);
+        });
+
+    });
 
     
 
