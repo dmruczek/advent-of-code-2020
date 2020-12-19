@@ -4,13 +4,18 @@ module.exports = class Computer {
         if (configObj) {
             this.debug = configObj.debug;
         }
-        this.accumulator = 0;
-        this.instructionPointer = 0;
         this.instructionMap = {
             'acc': this.executeAcc,
             'jmp': this.executeJmp,
             'nop': this.executeNop
         };
+
+        this.initialize();
+    }
+
+    initialize() {
+        this.accumulator = 0;
+        this.instructionPointer = 0;
     }
 
     loadInstructionsFromFile(filename) {
@@ -37,7 +42,7 @@ module.exports = class Computer {
 
     executeAcc(self, argument) {
         self.accumulator += argument;
-        self.instructionPointer ++;
+        self.instructionPointer++;
     }
 
     executeJmp(self, argument) {
@@ -45,7 +50,7 @@ module.exports = class Computer {
     }
 
     executeNop(self) {
-        self.instructionPointer ++;
+        self.instructionPointer++;
     }
 
     executeInstruction(instruction) {
@@ -68,8 +73,43 @@ module.exports = class Computer {
 
         let instructionsExecuted = [];
         while (!instructionsExecuted.includes(this.instructionPointer)) {
+            if (this.instructionPointer >= this.instructionArray.length) {
+                return 0;
+            }
             instructionsExecuted.push(this.instructionPointer);
             this.executeInstruction(this.instructionArray[this.instructionPointer]);
+        }
+        return -1;
+    }
+
+    repairProgram() {
+        for (let i = 0; i < this.instructionArray.length; i++) {
+            let thisInstruction = this.instructionArray[i];
+            let thisOperation = thisInstruction.operation;
+            if (thisOperation === 'jmp' || thisOperation === 'nop') {
+                if (this.attemptRepair(i)) {
+                    return;
+                }
+            }
+        }
+    }
+
+    attemptRepair(indexToAttemptRepair) {
+
+        const previousOperation = this.instructionArray[indexToAttemptRepair].operation;
+        if (previousOperation === 'nop') {
+            this.instructionArray[indexToAttemptRepair].operation = 'jmp';
+        } else if (previousOperation === 'jmp') {
+            this.instructionArray[indexToAttemptRepair].operation = 'nop';
+        }
+
+        this.initialize();
+        const successCode = this.runUntilRepeat();
+        if (successCode === 0) {
+            return true;
+        } else {
+            this.instructionArray[indexToAttemptRepair].operation = previousOperation;
+            return false;
         }
     }
 

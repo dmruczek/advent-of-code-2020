@@ -35,4 +35,16 @@ describe("Computer", function () {
 
     });
 
+    describe("repairProgram", function () {
+
+        it("should successfully repair the program.", function () {
+            computer.loadInstructionsFromFile('test-input.txt');
+            computer.repairProgram();
+            expect(computer.accumulator).toBe(8);
+
+        });
+
+    });
+    
+    
 });
