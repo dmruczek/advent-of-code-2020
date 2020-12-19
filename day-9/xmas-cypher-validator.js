@@ -46,4 +46,25 @@ module.exports = class XMASCypherValidator {
         }
     }
 
+    findEncryptionWeaknessRange(key) {
+        for (let i = 0; i < this.cypherArray.length; i++) {
+            let total = this.cypherArray[i];
+            for (let j = i+1; j < this.cypherArray.length; j++) {
+                total += this.cypherArray[j];
+                if (total === key) {
+                    return this.cypherArray.slice(i,j+1);
+                } else if (total > key) {
+                    break;
+                }
+            }
+        }
+    }
+
+    findEncryptionWeakness(key) {
+        const range = this.findEncryptionWeaknessRange(key);
+        const max = Math.max(...range);
+        const min = Math.min(...range);
+        return min + max;
+    }
+
 };
