@@ -7,6 +7,7 @@ module.exports = class JoltageAdapterCalculator {
 
     setJoltageAdapterArray(joltageAdapterArray) {
         this.joltageAdapterArray = joltageAdapterArray;
+        this.joltageAdapterArray = this.sortAdapterArrayAndAddTerminals(this.joltageAdapterArray);
     }
 
     loadJoltageAdaptersFromFile(filename) {
@@ -20,9 +21,14 @@ module.exports = class JoltageAdapterCalculator {
         for (let i = 0; i < this.rawJoltageAdapterData.length; i++) {
             this.joltageAdapterArray.push(parseInt(this.rawJoltageAdapterData[i]));
         }
-        this.joltageAdapterArray.push(0);
-        this.joltageAdapterArray.sort(function (a, b) { return a - b; });
-        this.joltageAdapterArray.push(this.joltageAdapterArray[this.joltageAdapterArray.length - 1] + 3);
+        this.joltageAdapterArray = this.sortAdapterArrayAndAddTerminals(this.joltageAdapterArray);
+    }
+
+    sortAdapterArrayAndAddTerminals(adapterArray) {
+        adapterArray.push(0);
+        adapterArray.sort(function (a, b) { return a - b; });
+        adapterArray.push(adapterArray[adapterArray.length - 1] + 3);
+        return adapterArray;
     }
 
     getNumberOfJoltageDifferences(joltageDifference) {
@@ -44,32 +50,76 @@ module.exports = class JoltageAdapterCalculator {
         let segmentArray = [];
         let startSegmentIndex = 0;
         for (let i = 1; i < adapterArray.length; i++) {
-            if (i+1 >= adapterArray.length) {
-                segmentArray.push(adapterArray.slice(startSegmentIndex, i+1));
+            if (i + 1 >= adapterArray.length) {
+                segmentArray.push(adapterArray.slice(startSegmentIndex, i + 1));
             }
             if (adapterArray[i + 1] - adapterArray[i] === 3) {
-                segmentArray.push(adapterArray.slice(startSegmentIndex, i+1));
-                startSegmentIndex = i+1;
+                segmentArray.push(adapterArray.slice(startSegmentIndex, i + 1));
+                startSegmentIndex = i + 1;
             }
         }
         return segmentArray;
     }
 
-    calculateNumberOfPossibleConnectionsForSegment(adapterSegment) {
-
-        let removalOptions = [];
-        removalOptions.push(undefined);
-
+    /**
+     * Calculates the number of possible ways to connect the adapters in this segment.  This is done
+     * by removing elements one at a time without violating the rule that adapters must be separated
+     * by no more than 3 joltage.  Each resulting adapter list is then itself checked to see if any
+     * other adapters could also be removed.
+     * @param {*} adapterSegment 
+     */
+    calculatePossibleOptionsForSegment(adapterSegment) {
+        let options = [];
         for (let i = 1; i < (adapterSegment.length - 1); i++) {
-
             if ((adapterSegment[i + 1] - adapterSegment[i - 1]) <= 3) {
-                removalOptions.push(adapterSegment[i]);
-            }
-            if (((i + 2) < adapterSegment.length) && (adapterSegment[i + 2] - adapterSegment[i - 1]) <= 3) {
-                removalOptions.push([adapterSegment[i], adapterSegment[i + 1]]);
+                options.push([...adapterSegment]);
+                options[options.length - 1].splice(i, 1);
             }
         }
-        return removalOptions.length;
+
+        let moreOptions = [];
+        for (let i = 0; i < options.length; i++) {
+            let moreOptionsToAdd = this.calculatePossibleOptionsForSegment(options[i]);
+            for (let j = 0; j < moreOptionsToAdd.length; j++) {
+                if (!this.doesArrayExistWithinArray(moreOptions, moreOptionsToAdd[j])) {
+                    moreOptions.push(moreOptionsToAdd[j]);
+                }
+            }
+        }
+
+        options.push(adapterSegment);
+        for (let i = 0; i < moreOptions.length; i++) {
+            if (!this.doesArrayExistWithinArray(options, moreOptions[i])) {
+                options.push(moreOptions[i]);
+
+            }
+        }
+
+        return options;
+    }
+
+    doesArrayExistWithinArray(containingArray, containedArray) {
+        const containedArrayAsString = JSON.stringify(containedArray);
+        return containingArray.some(function (ele) {
+            return JSON.stringify(ele) === containedArrayAsString;
+        });
+    }
+
+
+    calculateNumberOfPossibleConnectionsForSegment(adapterSegment) {
+        const options = this.calculatePossibleOptionsForSegment(adapterSegment);
+        return options.length;
+    }
+
+
+    calculateNumberOfPossibleConnections() {
+        let totalNumberOfPossibilities = 1;
+        let segmentArray = this.splitAdapterArrayIntoSegments(this.joltageAdapterArray);
+        for (let i = 0; i < segmentArray.length; i++) {
+            let segmentPossibilityCount = this.calculateNumberOfPossibleConnectionsForSegment(segmentArray[i]);
+            totalNumberOfPossibilities *= segmentPossibilityCount;
+        }
+        return totalNumberOfPossibilities;
     }
 
 };
