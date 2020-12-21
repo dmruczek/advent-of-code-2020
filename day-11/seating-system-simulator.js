@@ -107,23 +107,31 @@ module.exports = class SeatingSystemSimulator {
         console.log(this.getSeatingChartAsString());
     }
 
-    simulateAndDisplay() {
-        console.clear();
+    simulateAndDisplay(shouldClearConsole) {
+        if (shouldClearConsole) {
+            console.clear();
+        } else {
+            console.log('\n');
+        }
         this.printSeatingChart();
         const self = this;
-        setTimeout(function () { self.simulateStepAndDisplay(self); }, 500);
+        setTimeout(function () { self.simulateStepAndDisplay(self, shouldClearConsole); }, 500);
     }
 
-    simulateStepAndDisplay(self) {
+    simulateStepAndDisplay(self, shouldClearConsole) {
         let previousSeatingChartStringified = JSON.stringify([...self.seatingChart]);
         self.simulateStep();
-        console.clear();
+        if (shouldClearConsole) {
+            console.clear();
+        } else {
+            console.log('\n');
+        }
         self.printSeatingChart();
         let newSeatingChartStringified = JSON.stringify(self.seatingChart);
         if (previousSeatingChartStringified === newSeatingChartStringified) {
             exit(0);
         }
-        setTimeout(function () { self.simulateStepAndDisplay(self); }, 500);
+        setTimeout(function () { self.simulateStepAndDisplay(self, shouldClearConsole); }, 500);
     }
 
 };
