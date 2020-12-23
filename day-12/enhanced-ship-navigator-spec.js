@@ -84,26 +84,4 @@ describe("EnhancedShipNavigator", function () {
 
     });
 
-    
-    // describe("implementInstruction", function () {
-
-    //     it("should handle L/R instructions", function () {
-    //         const shipNavigator = new ShipNavigator();
-    //         shipNavigator.heading = 'N';
-    //         shipNavigator.implementInstruction({action:'R', value: 180});
-    //         expect(shipNavigator.heading).toBe('S');
-
-    //         shipNavigator.heading = 'N';
-    //         shipNavigator.implementInstruction({action:'L', value: 180});
-    //         expect(shipNavigator.heading).toBe('S');
-
-    //         shipNavigator.heading = 'E';
-    //         shipNavigator.implementInstruction({action:'L', value: 270});
-    //         expect(shipNavigator.heading).toBe('S');
-
-    //     });
-
-    // });
-    
-
 });
